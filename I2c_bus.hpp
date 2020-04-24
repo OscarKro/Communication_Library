@@ -1,6 +1,6 @@
 #pragma once
-#include "./rtos/rtos.hpp"
-#include "./hwlib/library/hwlib.hpp"
+#include "../../../libraries/rtos/rtos.hpp"
+#include "../../../libraries/hwlib/library/hwlib.hpp"
 
 class i2c_bus{
 private:
@@ -13,6 +13,11 @@ public:
         scl.write(1);
         sda.write(0);
     };
+
+    void setWaitTime(uint8_t time)
+    {
+        wait_time = time;
+    }
 
     void writeStart() {
         scl.write(1);
