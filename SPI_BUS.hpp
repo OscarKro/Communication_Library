@@ -96,21 +96,22 @@ public:
 	//Function to transmit a byte over the SPI bus
 	///\details
 	//This function transmits a full byte over the SPI bus using the sclk and mosi pin and utilizing bit banging. Take note that most SPI busses require
-	//some time between setting the sclk pin high and low. This time can be set in the constructor of this object. The default time is 50 nano seconds.
+	//some time between setting the sclk pin high and low. This time can be set in the constructor of this object or by calling the setSpiClockTime. The default time is 50 nano seconds.
 	//Also keep in mind that this function does NOT pull the SS pin high or low. This needs to be done manually because some SPI chips are SS active high
 	//and most are active low. The function is virtual so can be overwritten with another implementation.
 	///@param byte A uint8_t (unsigned char) containing the byte that is transmitted over the bus
 	virtual void transmitByte(uint8_t byte)
 	{
-		for (int i = 0; i < 8; i++) {
-		bool tmp = byte & 128;
-		byte <<= 1;
-		setMosi(tmp);
-		setSCLK(1);
-		hwlib::wait_ns(spiWaitTimeNs);
-		setSCLK(0);
-		hwlib::wait_ns(spiWaitTimeNs);
-	}
+		for (int i = 0; i < 8; i++)
+		{
+			bool tmp = byte & 128;
+			byte <<= 1;
+			setMosi(tmp);
+			setSCLK(1);
+			hwlib::wait_ns(spiWaitTimeNs);
+			setSCLK(0);
+			hwlib::wait_ns(spiWaitTimeNs);
+		}
 	}
 
 	///\brief
@@ -118,19 +119,20 @@ public:
 	///\details
 	//This function reads a full byte using the MISO and SCLK pins and utilizing bit banging. It reads the most significant bit first because this is
 	//the standard. Take note that most SPI busses require some time between setting the sclk pin high and low. This time can be set in the constructor
-	// of this object. The default time is 50 nano seconds. The function is virtual so can be overwritten with another implementation.
+	// of this object or by calling the setSpiClockTime. The default time is 50 nano seconds. The function is virtual so can be overwritten with another implementation.
 	///@return Returns a uint8_t (unsigned char) containing the byte that was written over the bus
 	virtual uint8_t receiveByte()
 	{
 		uint8_t message = 0;
-	for (int i = 0; i < 8; i++) {
-		message <<= 1;
-		setSCLK(1);
-		hwlib::wait_ns(spiWaitTimeNs);
-		message |= readMiso();
-		setSCLK(0);
-		hwlib::wait_ns(spiWaitTimeNs);
-	}
-	return message;
+		for (int i = 0; i < 8; i++)
+		{
+			message <<= 1;
+			setSCLK(1);
+			hwlib::wait_ns(spiWaitTimeNs);
+			message |= readMiso();
+			setSCLK(0);
+			hwlib::wait_ns(spiWaitTimeNs);
+		}
+		return message;
 	}
 };
