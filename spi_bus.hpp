@@ -100,7 +100,7 @@ public:
 	//Also keep in mind that this function does NOT pull the SS pin high or low. This needs to be done manually because some SPI chips are SS active high
 	//and most are active low. The function is virtual so can be overwritten with another implementation.
 	///@param byte A uint8_t (unsigned char) containing the byte that is transmitted over the bus
-	virtual void transmitByte(uint8_t byte)
+	virtual void writeByte(uint8_t byte)
 	{
 		for (int i = 0; i < 8; i++)
 		{
@@ -121,7 +121,7 @@ public:
 	//the standard. Take note that most SPI busses require some time between setting the sclk pin high and low. This time can be set in the constructor
 	// of this object or by calling the setSpiClockTime. The default time is 50 nano seconds. The function is virtual so can be overwritten with another implementation.
 	///@return Returns a uint8_t (unsigned char) containing the byte that was written over the bus
-	virtual uint8_t receiveByte()
+	virtual uint8_t readByte()
 	{
 		uint8_t message = 0;
 		for (int i = 0; i < 8; i++)
