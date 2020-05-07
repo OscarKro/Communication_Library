@@ -63,9 +63,11 @@ public:
     //called at the end of a i2c transmission.
     void writeStop()
     {
+        sda.write(0);
+        sda.flush();
         scl.write(1);
-        sda.write(1);
         scl.flush();
+        sda.write(1);
         sda.flush();
         hwlib::wait_ns(wait_time);
     }
@@ -77,12 +79,10 @@ public:
     ///@return Returns true if an acknowledgement was received.
     bool readAck()
     {
-        sda.write(1);
-        sda.flush();
         scl.write(1);
         scl.flush();
         hwlib::wait_ns(wait_time);
-        auto ack = sda.read();
+        auto ack = !sda.read();
         scl.write(0);
         scl.flush();
         return ack;
@@ -93,7 +93,7 @@ public:
     ///\details
     //This function needs to be used after a read transmission by the user. If a byte has been read using the readByte() function the 9th bit can be send by using
     //this function.
-    ///@param ack, bool, the acknowledgement (or not) you want to send
+    ///@param ack, bool, the acknowledgement (or not) you want to send, 1 for ack, 0 of no-ack
     void writeAck(bool ack)
     {
         sda.write(!ack);
@@ -102,9 +102,7 @@ public:
         scl.flush();
         hwlib::wait_ns(wait_time);
         scl.write(0);
-        sda.write(1);
         scl.flush();
-        sda.flush();
     }
 
     ///\brief
