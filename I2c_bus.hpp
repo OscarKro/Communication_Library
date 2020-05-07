@@ -11,7 +11,8 @@
 ///\details
 /*This is a class used with hwlib to construct a very simple to use i2c bus. All the basic steps of an I2C transmission can be done with this class. Starting a transmission, writing
 a chip adress, writing a register adress, than reading from that adress and stop the transmission again for example.*/
-class i2c_bus{
+class i2c_bus
+{
 private:
     hwlib::pin_oc &sda;
     hwlib::pin_oc &scl;
@@ -24,7 +25,8 @@ public:
     /*This is the standard constructor that needs to be used in order to get a working object.*/
     ///@param sda, hwlib::pin_oc &, the sda pin (data pin).
     ///@param scl, hwlib::pin_oc &, the scl (clock) pin.
-    i2c_bus(hwlib::pin_oc &sda, hwlib::pin_oc &scl): sda(sda), scl(scl) {
+    i2c_bus(hwlib::pin_oc &sda, hwlib::pin_oc &scl) : sda(sda), scl(scl)
+    {
         scl.write(1);
         sda.write(0);
     };
@@ -45,7 +47,8 @@ public:
     ///\details
     //This function is used to write a standard i2c start signal to the chip. It sets the clock high and the sda low, then waits for the set wait_time. This function always
     //needs to be called at the start of any transmission.
-    void writeStart() {
+    void writeStart()
+    {
         scl.write(1);
         scl.flush();
         sda.write(0);
@@ -58,7 +61,8 @@ public:
     ///\details
     //This function is used to write a standard i2c stop signal to the chip. It sets the clock and sda high and then waits for the set wait_time. This function always needs to be
     //called at the end of a i2c transmission.
-    void writeStop() {
+    void writeStop()
+    {
         scl.write(1);
         sda.write(1);
         scl.flush();
@@ -71,11 +75,14 @@ public:
     ///\details
     //This function needs to be used by the user at the end of a write transmission to read the 9th bit or ACK bit. If it is high, the data is received and this function returns true.
     ///@return Returns true if an acknowledgement was received.
-    bool readAck() {
+    bool readAck()
+    {
+        sda.write(1);
+        sda.flush();
         scl.write(1);
         scl.flush();
-        auto ack = sda.read();
         hwlib::wait_ns(wait_time);
+        auto ack = sda.read();
         scl.write(0);
         scl.flush();
         return ack;
@@ -89,14 +96,14 @@ public:
     ///@param ack, bool, the acknowledgement (or not) you want to send
     void writeAck(bool ack)
     {
-        sda.write(ack);
+        sda.write(!ack);
         sda.flush();
         scl.write(1);
         scl.flush();
         hwlib::wait_ns(wait_time);
         scl.write(0);
+        sda.write(1);
         scl.flush();
-        sda.write(0);
         sda.flush();
     }
 
@@ -105,12 +112,14 @@ public:
     ///\details
     //This function is used to write a full byte over the bus. It does NOT start the transmission, read or writes acks, or ends the transmission. It just bit bangs the byte.
     ///@param byte, const uint8_t, the byte you want to send over the bus.
-    void writeByte(const uint8_t byte) {
+    void writeByte(const uint8_t byte)
+    {
         uint8_t tmpByte = byte;
         scl.write(0);
         scl.flush();
         hwlib::wait_ns(wait_time);
-        for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < 8; i++)
+        {
             bool tmp = tmpByte & 128;
             tmpByte <<= 1;
             sda.write(tmp);
@@ -122,8 +131,6 @@ public:
             scl.flush();
             hwlib::wait_ns(wait_time);
         }
-        sda.write(0);
-        sda.flush();
     }
 
     ///\brief
@@ -132,11 +139,13 @@ public:
     //This function is used to read a byte from the bus and return this byte. It does NOT start the transmission, read or writes acks, or ends the transmission, it just utilizes
     //bit banging in order to read a byte
     ///@return retursn a uint8_t containing the byte it read.
-    uint8_t readByte() {
+    uint8_t readByte()
+    {
         scl.write(0);
         scl.flush();
         uint8_t message = 0;
-        for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < 8; i++)
+        {
             message <<= 1;
             scl.write(1);
             scl.flush();
