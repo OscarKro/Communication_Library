@@ -2,15 +2,15 @@
 #include <hwlib.hpp>
 ///@file
 ///\brief
-/*This file contains the declaration and definition of a I2C bus using the hwlib library.*/
+/*This file contains the declaration and definition (header only) of a I2C bus using the hwlib library.*/
 ///\author Oscar Kromhout
 ///\date 25-4-2020
 
 ///\brief
 /*I2C_bus class*/
 ///\details
-/*This is a class used with hwlib to construct a very simple to use i2c bus. All the basic steps of an I2C transmission can be done with this class. Starting a transmission, writing
-a chip adress, writing a register adress, than reading from that adress and stop the transmission again for example.*/
+//This is a class used with hwlib to construct a very simple to use i2c bus. All the basic steps of an I2C transmission can be done with this class. Starting a transmission, writing
+//a chip adress, writing a register adress, than reading from that adress and stop the transmission again for example.
 class i2c_bus
 {
 private:
@@ -30,13 +30,13 @@ public:
         scl.write(1);
         sda.write(0);
     };
-
+    
     ///\brief
     //Function to set the wait time between signals.
     ///\details
     //This function is used to set the wait time between certain parts of a transmission. For example the time between writing a start signal, and than writing a byte, or for example
     //between two bytes. The standard wait time is 10 ns.
-    ///@param time, the time you want to wait in Ns (nano seconds).
+    ///\param time, the time you want to wait in Ns (nano seconds).
     void setWaitTime(uint8_t time)
     {
         wait_time = time;
@@ -118,6 +118,9 @@ public:
     //Function to write a byte over the bus
     ///\details
     //This function is used to write a full byte over the bus. It does NOT start the transmission, read or writes acks, or ends the transmission. It just bit bangs the byte.
+    //For most protocols the order of transmission to write a byte is as follows (not auto incremented): 
+    //write start -> write slave adress -> read ack -> write register adress -> read ack -> write the byte -> read ack -> write next adress, read ack and write byte 
+    //, read ack or write stop to stop the transmission.
     ///@param byte, const uint8_t, the byte you want to send over the bus.
     void writeByte(const uint8_t byte)
     {
