@@ -49,10 +49,17 @@ public:
     //needs to be called at the start of any transmission.
     void writeStart()
     {
+        sda.write(1);
+        sda.flush();
+        hwlib::wait_ns(wait_time);
         scl.write(1);
         scl.flush();
+        hwlib::wait_ns(wait_time);
         sda.write(0);
         sda.flush();
+        hwlib::wait_ns(wait_time);
+        scl.write(0);
+        scl.flush();
         hwlib::wait_ns(wait_time);
     }
 
@@ -65,8 +72,10 @@ public:
     {
         sda.write(0);
         sda.flush();
+        hwlib::wait_ns(wait_time);
         scl.write(1);
         scl.flush();
+        hwlib::wait_ns(wait_time);
         sda.write(1);
         sda.flush();
         hwlib::wait_ns(wait_time);
@@ -113,8 +122,6 @@ public:
     void writeByte(const uint8_t byte)
     {
         uint8_t tmpByte = byte;
-        scl.write(0);
-        scl.flush();
         hwlib::wait_ns(wait_time);
         for (int i = 0; i < 8; i++)
         {
@@ -136,11 +143,12 @@ public:
     ///\details
     //This function is used to read a byte from the bus and return this byte. It does NOT start the transmission, read or writes acks, or ends the transmission, it just utilizes
     //bit banging in order to read a byte
+    //Notice that for most I2C busses reading is done in this order:
+    //start transmission -> Write slave adress -> read ack -> write register adress -> read ack -> repeat start -> write slave adress + 1 -> read ack -> read byte -> write ack
+    //for more data or write no ack and write stop transmission to stop.
     ///@return retursn a uint8_t containing the byte it read.
     uint8_t readByte()
     {
-        scl.write(0);
-        scl.flush();
         uint8_t message = 0;
         for (int i = 0; i < 8; i++)
         {
@@ -150,7 +158,7 @@ public:
             hwlib::wait_ns(wait_time);
             message |= sda.read();
             scl.write(0);
-            scl.read();
+            scl.flush();
             hwlib::wait_ns(wait_time);
         }
         return message;
