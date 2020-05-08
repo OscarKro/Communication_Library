@@ -52,7 +52,7 @@ public:
 	///\details
 	//This function sets the MOSI pin high or low and flushes the buffer
 	///@param b A bool that sets the pin
-	void setMosi(bool b);
+	void setMosi(bool b)
 	{
 		mosi.write(b);
 		mosi.flush();
@@ -63,7 +63,7 @@ public:
 	///\details
 	//This function sets the SCLK pin high or low and flushes the buffer
 	///@param b A bool that sets the pin
-	void setSCLK(bool b);
+	void setSCLK(bool b)
 	{
 		sclk.write(b);
 		sclk.flush();
@@ -72,7 +72,7 @@ public:
 	///\brief
 	//Function that reads the master in, slave out pin
 	///@return Returns a bool that is high when the MISO pin is high, else it returns low
-	bool readMiso();
+	bool readMiso()
 	{
 		return miso.read();
 	}
