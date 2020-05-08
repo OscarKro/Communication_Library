@@ -30,7 +30,7 @@ public:
         scl.write(1);
         sda.write(0);
     };
-    
+
     ///\brief
     //Function to set the wait time between signals.
     ///\details
@@ -118,8 +118,8 @@ public:
     //Function to write a byte over the bus
     ///\details
     //This function is used to write a full byte over the bus. It does NOT start the transmission, read or writes acks, or ends the transmission. It just bit bangs the byte.
-    //For most protocols the order of transmission to write a byte is as follows (not auto incremented): 
-    //write start -> write slave adress -> read ack -> write register adress -> read ack -> write the byte -> read ack -> write next adress, read ack and write byte 
+    //For most protocols the order of transmission to write a byte is as follows (not auto incremented):
+    //write start -> write slave adress -> read ack -> write register adress -> read ack -> write the byte -> read ack -> write next adress, read ack and write byte
     //, read ack or write stop to stop the transmission.
     ///@param byte, const uint8_t, the byte you want to send over the bus.
     void writeByte(const uint8_t byte)
@@ -147,12 +147,13 @@ public:
     //This function is used to read a byte from the bus and return this byte. It does NOT start the transmission, read or writes acks, or ends the transmission, it just utilizes
     //bit banging in order to read a byte
     //Notice that for most I2C busses reading is done in this order:
-    //start transmission -> Write slave adress -> read ack -> write register adress -> read ack -> repeat start -> write slave adress + 1 -> read ack -> read byte -> write ack
+    //start transmission -> Write slave adress -> read ack -> write register adress -> read ack -> repeat start (and sometimes stop as well) -> write slave adress + 1 -> read ack -> read byte -> write ack
     //for more data or write no ack and write stop transmission to stop.
     ///@return retursn a uint8_t containing the byte it read.
     uint8_t readByte()
     {
         uint8_t message = 0;
+        hwlib::wait_ns(wait_time);
         for (int i = 0; i < 8; i++)
         {
             message <<= 1;
