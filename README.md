@@ -18,7 +18,7 @@ For most chips, the writing with the I2C bus functions is something like this:
 ### reading with I2C
 For most chips, the reading with the I2C bus functions is something like this:
 
-*writeStart() -> writeByte(slave adress) -> readAck() -> writeByte(register adress) -> readAck() -> writeStart() (and sometimes also writeStop()) -> writeByte(slave adress with read bit set to 1) -> readAck() -> readByte() -> repeat or writeStop()*
+*writeStart() -> writeByte(slave adress) -> readAck() -> writeByte(register adress) -> readAck() -> writeStart() (and sometimes also writeStop()) -> writeByte(slave adress with read bit set to 1) -> readAck() -> readByte() -> writeAck(1) -> repeat or writeAck(0) -> writeStop()*
 
 But the protocol for reading with I2C can sometimes differ from manufacturer to manufacturer so be sure to read the datasheet.
 
