@@ -102,7 +102,7 @@ public:
     ///\details
     //This function needs to be used after a read transmission by the user. If a byte has been read using the readByte() function the 9th bit can be send by using
     //this function.
-    ///@param ack, bool, the acknowledgement (or not) you want to send, 1 for ack, 0 of no-ack
+    ///@param ack, bool, the acknowledgement (or not) you want to send, 1 for ack, 0 for no-ack
     void writeAck(bool ack)
     {
         sda.write(!ack);
