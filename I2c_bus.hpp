@@ -16,6 +16,8 @@ class i2c_bus
 private:
     hwlib::pin_oc &sda;
     hwlib::pin_oc &scl;
+
+protected:
     uint8_t wait_time = 10;
 
 public:
@@ -47,7 +49,7 @@ public:
     ///\details
     //This function is used to write a standard i2c start signal to the chip. It sets the clock high and the sda low, then waits for the set wait_time. This function always
     //needs to be called at the start of any transmission.
-    void writeStart()
+    virtual void writeStart()
     {
         sda.write(1);
         sda.flush();
@@ -122,7 +124,7 @@ public:
     //write start -> write slave adress -> read ack -> write register adress -> read ack -> write the byte -> read ack -> write next adress, read ack and write byte
     //, read ack or write stop to stop the transmission.
     ///@param byte, const uint8_t, the byte you want to send over the bus.
-    void writeByte(const uint8_t byte)
+    virtual void writeByte(const uint8_t byte)
     {
         uint8_t tmpByte = byte;
         hwlib::wait_ns(wait_time);
@@ -150,7 +152,7 @@ public:
     //start transmission -> Write slave adress -> read ack -> write register adress -> read ack -> repeat start (and sometimes stop as well) -> write slave adress + 1 -> read ack -> read byte -> write ack
     //for more data or write no ack and write stop transmission to stop.
     ///@return retursn a uint8_t containing the byte it read.
-    uint8_t readByte()
+    virtual uint8_t readByte()
     {
         uint8_t message = 0;
         hwlib::wait_ns(wait_time);
