@@ -2,7 +2,7 @@
 Small communication Library for use with HWLIB. It is mostly for my own use (or other students if need be).
 
 ## Author
-Made by Oscar Kromhout, Gorinchem, The Netherlands
+Made by Oscar Kromhout, The Netherlands
 
 ## Explanation
 I've found that the standard I2C and SPI bus within the [Hardware Library](https://github.com/wovo/hwlib) from Wovo can be a bit confusing and will sometimes not work because of other manufacturer implementations of a bus. So I've decided to write my own low level busses to use. This way anyone can use a bus however they want.
